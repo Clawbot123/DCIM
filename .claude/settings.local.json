@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(python:*)",
+      "Bash(./venv/Scripts/pip install:*)",
+      "Bash(./venv/Scripts/python:*)",
+      "Bash(rm:*)",
+      "Bash(npm run:*)",
+      "Bash(node:*)",
+      "Bash(Start-Process cmd:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(source:*)",
+      "Bash(echo:*)",
+      "Bash(curl:*)",
+      "Bash(xargs grep:*)",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(venv/Scripts/python:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd:*)",
+      "Bash(npx tsc:*)",
+      "Bash(netstat:*)",
+      "Bash(ls:*)",
+      "Bash(xargs sed:*)",
+      "WebFetch(domain:openclaw.ai)",
+      "Bash(where snmpwalk:*)",
+      "Bash(pip install:*)",
+      "Bash(ping -n 3 10.144.166.152)",
+      "Bash(powershell.exe -Command \"Start-Process cmd -ArgumentList '/k','cd /d C:\\\\Users\\\\varun\\\\OneDrive\\\\Desktop\\\\DCIM && start_dev.bat'\")"
+    ]
+  }
+}
