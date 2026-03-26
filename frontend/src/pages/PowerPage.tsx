@@ -30,44 +30,44 @@ function PanelModal({ onClose, editing }: { onClose: () => void; editing?: Power
   const f = (k: string, v: string | number) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-sm font-bold text-gray-800">{editing ? 'Edit Power Panel' : 'Add Power Panel'}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+    <div className="modal-overlay">
+      <div className="modal-box">
+        <div className="modal-header">
+          <h2 className="modal-title">{editing ? 'Edit Power Panel' : 'Add Power Panel'}</h2>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="modal-body">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Panel Name *</label>
-            <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Panel Name *</label>
+            <input className="field-input"
               value={form.name} onChange={e => f('name', e.target.value)} placeholder="e.g. PP-A01" />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Data Center *</label>
-            <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Data Center *</label>
+            <select className="field-input"
               value={form.datacenter} onChange={e => f('datacenter', Number(e.target.value))}>
               <option value="">Select Data Center</option>
               {dcList.map(dc => <option key={dc.id} value={dc.id}>{dc.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Location / Description</label>
-            <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Location / Description</label>
+            <input className="field-input"
               value={form.location} onChange={e => f('location', e.target.value)} placeholder="e.g. Row A, west wall" />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Incoming Power (kW)</label>
-            <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Incoming Power (kW)</label>
+            <input type="number" className="field-input"
               value={form.incoming_power_kw} onChange={e => f('incoming_power_kw', Number(e.target.value))} min={0} />
           </div>
           {mutation.isError && (
-            <div className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">Failed to save power panel.</div>
+            <div className="modal-error">Failed to save power panel.</div>
           )}
         </div>
-        <div className="flex gap-2 px-5 pb-5">
-          <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm hover:bg-gray-50">Cancel</button>
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={!form.name || !form.datacenter || mutation.isPending}
             onClick={() => mutation.mutate()}
           >
@@ -103,21 +103,21 @@ function FeedModal({ onClose, editing, panels }: { onClose: () => void; editing?
   const f = (k: string, v: string | number | boolean) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-sm font-bold text-gray-800">{editing ? 'Edit Power Feed' : 'Add Power Feed'}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+    <div className="modal-overlay">
+      <div className="modal-box">
+        <div className="modal-header">
+          <h2 className="modal-title">{editing ? 'Edit Power Feed' : 'Add Power Feed'}</h2>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="modal-body">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Feed Name *</label>
-            <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Feed Name *</label>
+            <input className="field-input"
               value={form.name} onChange={e => f('name', e.target.value)} placeholder="e.g. Feed-A1" />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Power Panel *</label>
-            <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Power Panel *</label>
+            <select className="field-input"
               value={form.power_panel} onChange={e => f('power_panel', Number(e.target.value))}>
               <option value="">Select Panel</option>
               {panels.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -125,15 +125,15 @@ function FeedModal({ onClose, editing, panels }: { onClose: () => void; editing?
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Status</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Status</label>
+              <select className="field-input"
                 value={form.status} onChange={e => f('status', e.target.value)}>
                 {['active', 'planned', 'offline'].map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Phase</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Phase</label>
+              <select className="field-input"
                 value={form.phase} onChange={e => f('phase', e.target.value)}>
                 {['single-phase', 'three-phase'].map(s => <option key={s} value={s}>{s}</option>)}
               </select>
@@ -141,13 +141,13 @@ function FeedModal({ onClose, editing, panels }: { onClose: () => void; editing?
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Voltage (V)</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Voltage (V)</label>
+              <input type="number" className="field-input"
                 value={form.voltage} onChange={e => f('voltage', Number(e.target.value))} min={0} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Amperage (A)</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Amperage (A)</label>
+              <input type="number" className="field-input"
                 value={form.amperage} onChange={e => f('amperage', Number(e.target.value))} min={0} />
             </div>
           </div>
@@ -156,13 +156,13 @@ function FeedModal({ onClose, editing, panels }: { onClose: () => void; editing?
             Redundant feed
           </label>
           {mutation.isError && (
-            <div className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">Failed to save power feed.</div>
+            <div className="modal-error">Failed to save power feed.</div>
           )}
         </div>
-        <div className="flex gap-2 px-5 pb-5">
-          <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm hover:bg-gray-50">Cancel</button>
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={!form.name || !form.power_panel || mutation.isPending}
             onClick={() => mutation.mutate()}
           >

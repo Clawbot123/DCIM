@@ -44,22 +44,22 @@ function CoolingUnitModal({ onClose, editing }: { onClose: () => void; editing?:
   const f = (k: string, v: string | number) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-sm font-bold text-gray-800">{editing ? 'Edit Cooling Unit' : 'Add Cooling Unit'}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+    <div className="modal-overlay">
+      <div className="modal-box">
+        <div className="modal-header">
+          <h2 className="modal-title">{editing ? 'Edit Cooling Unit' : 'Add Cooling Unit'}</h2>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="modal-body">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Name *</label>
-            <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Name *</label>
+            <input className="field-input"
               value={form.name} onChange={e => f('name', e.target.value)} placeholder="e.g. CRAC-01" />
           </div>
           {!editing && (
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Data Center</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Data Center</label>
+              <select className="field-input"
                 value={selectedDC}
                 onChange={e => { setSelectedDC(Number(e.target.value)); setForm(p => ({ ...p, room: '' })); }}>
                 <option value="">Select Data Center</option>
@@ -69,8 +69,8 @@ function CoolingUnitModal({ onClose, editing }: { onClose: () => void; editing?:
           )}
           {!editing && (
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Room *</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Room *</label>
+              <select className="field-input"
                 value={form.room} onChange={e => f('room', Number(e.target.value))}
                 disabled={!selectedDC}>
                 <option value="">Select Room</option>
@@ -80,15 +80,15 @@ function CoolingUnitModal({ onClose, editing }: { onClose: () => void; editing?:
           )}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Unit Type</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Unit Type</label>
+              <select className="field-input"
                 value={form.unit_type} onChange={e => f('unit_type', e.target.value)}>
                 {UNIT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Status</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Status</label>
+              <select className="field-input"
                 value={form.status} onChange={e => f('status', e.target.value)}>
                 {['active', 'planned', 'maintenance', 'offline'].map(s => (
                   <option key={s} value={s}>{s}</option>
@@ -98,24 +98,24 @@ function CoolingUnitModal({ onClose, editing }: { onClose: () => void; editing?:
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Cooling Capacity (kW)</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Cooling Capacity (kW)</label>
+              <input type="number" className="field-input"
                 value={form.cooling_capacity_kw} onChange={e => f('cooling_capacity_kw', Number(e.target.value))} min={0} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Power Draw (kW)</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Power Draw (kW)</label>
+              <input type="number" className="field-input"
                 value={form.power_draw_kw} onChange={e => f('power_draw_kw', Number(e.target.value))} min={0} />
             </div>
           </div>
           {mutation.isError && (
-            <div className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">Failed to save cooling unit.</div>
+            <div className="modal-error">Failed to save cooling unit.</div>
           )}
         </div>
-        <div className="flex gap-2 px-5 pb-5">
-          <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm hover:bg-gray-50">Cancel</button>
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={!form.name || (!editing && !form.room) || mutation.isPending}
             onClick={() => mutation.mutate()}
           >
@@ -178,20 +178,20 @@ function SensorModal({ onClose, editing }: { onClose: () => void; editing?: Temp
   const f = (k: string, v: string | number) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-sm font-bold text-gray-800">{editing ? 'Edit Sensor' : 'Add Temperature Sensor'}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+    <div className="modal-overlay">
+      <div className="modal-box">
+        <div className="modal-header">
+          <h2 className="modal-title">{editing ? 'Edit Sensor' : 'Add Temperature Sensor'}</h2>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="modal-body">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Sensor Name *</label>
-            <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Sensor Name *</label>
+            <input className="field-input"
               value={form.name} onChange={e => f('name', e.target.value)} placeholder="e.g. Temp-Rack-A01" />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Location Type</label>
+            <label className="field-label">Location Type</label>
             <div className="flex gap-2">
               {(['room', 'rack'] as const).map(t => (
                 <button key={t} onClick={() => setLocationType(t)}
@@ -206,16 +206,16 @@ function SensorModal({ onClose, editing }: { onClose: () => void; editing?: Temp
           {locationType === 'room' && (
             <>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Data Center</label>
-                <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+                <label className="field-label">Data Center</label>
+                <select className="field-input"
                   value={selectedDC} onChange={e => setSelectedDC(Number(e.target.value))}>
                   <option value="">Select Data Center</option>
                   {dcList.map(dc => <option key={dc.id} value={dc.id}>{dc.name}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Room *</label>
-                <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+                <label className="field-label">Room *</label>
+                <select className="field-input"
                   value={form.room} onChange={e => f('room', Number(e.target.value))} disabled={!selectedDC}>
                   <option value="">Select Room</option>
                   {roomList.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
@@ -225,8 +225,8 @@ function SensorModal({ onClose, editing }: { onClose: () => void; editing?: Temp
           )}
           {locationType === 'rack' && (
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Rack *</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Rack *</label>
+              <select className="field-input"
                 value={form.rack} onChange={e => f('rack', Number(e.target.value))}>
                 <option value="">Select Rack</option>
                 {rackList.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
@@ -234,35 +234,35 @@ function SensorModal({ onClose, editing }: { onClose: () => void; editing?: Temp
             </div>
           )}
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Current Temp (°C)</label>
-            <input type="number" step="0.1" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Current Temp (°C)</label>
+            <input type="number" step="0.1" className="field-input"
               value={form.current_temp_c} onChange={e => f('current_temp_c', Number(e.target.value))} />
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Low (°C)</label>
-              <input type="number" step="0.1" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Low (°C)</label>
+              <input type="number" step="0.1" className="field-input"
                 value={form.threshold_low_c} onChange={e => f('threshold_low_c', Number(e.target.value))} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">High (°C)</label>
-              <input type="number" step="0.1" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">High (°C)</label>
+              <input type="number" step="0.1" className="field-input"
                 value={form.threshold_high_c} onChange={e => f('threshold_high_c', Number(e.target.value))} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Critical (°C)</label>
-              <input type="number" step="0.1" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Critical (°C)</label>
+              <input type="number" step="0.1" className="field-input"
                 value={form.threshold_critical_c} onChange={e => f('threshold_critical_c', Number(e.target.value))} />
             </div>
           </div>
           {mutation.isError && (
-            <div className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">Failed to save sensor.</div>
+            <div className="modal-error">Failed to save sensor.</div>
           )}
         </div>
-        <div className="flex gap-2 px-5 pb-5">
-          <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm hover:bg-gray-50">Cancel</button>
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={!form.name || mutation.isPending}
             onClick={() => mutation.mutate()}
           >

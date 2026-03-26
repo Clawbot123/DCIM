@@ -5,7 +5,7 @@ import { reportsApi, alertApi } from '../api';
 import type { DashboardStats, Alert } from '../types';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend, AreaChart, Area
+  PieChart, Pie, Cell, Legend, AreaChart, Area,
 } from 'recharts';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#84cc16'];
@@ -37,6 +37,13 @@ const trendData = Array.from({ length: 12 }, (_, i) => ({
   racks: Math.floor(20 + i * 2),
 }));
 
+const tooltipStyle = {
+  backgroundColor: 'var(--bg-elevated)',
+  border: '1px solid var(--border)',
+  borderRadius: 8,
+  color: 'var(--text-primary)',
+};
+
 export default function Dashboard() {
   const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
@@ -57,20 +64,22 @@ export default function Dashboard() {
     );
   }
 
-  const pieData = stats?.devices_by_role
-    .filter(d => d.count > 0)
-    .map(d => ({
-      name: ROLE_LABELS[d.device_type__device_role] || d.device_type__device_role,
-      value: d.count,
-    })) || [];
+  const pieData =
+    stats?.devices_by_role
+      .filter((d) => d.count > 0)
+      .map((d) => ({
+        name: ROLE_LABELS[d.device_type__device_role] || d.device_type__device_role,
+        value: d.count,
+      })) || [];
 
-  const statusData = stats?.devices_by_status
-    .filter(d => d.count > 0)
-    .map(d => ({
-      name: d.status,
-      value: d.count,
-      fill: STATUS_COLORS[d.status] || '#6b7280',
-    })) || [];
+  const statusData =
+    stats?.devices_by_status
+      .filter((d) => d.count > 0)
+      .map((d) => ({
+        name: d.status,
+        value: d.count,
+        fill: STATUS_COLORS[d.status] || '#6b7280',
+      })) || [];
 
   return (
     <div>
@@ -79,9 +88,9 @@ export default function Dashboard() {
           <h1 className="page-title">Dashboard</h1>
           <p className="page-subtitle">Data Center Infrastructure Overview</p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-dark-500">
+        <div className="flex items-center gap-2 text-sm">
           <Activity className="w-4 h-4 text-green-400" />
-          <span>Live</span>
+          <span style={{ color: 'var(--text-muted)' }}>Live</span>
         </div>
       </div>
 
@@ -121,7 +130,10 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         {/* Growth Trend */}
         <div className="card lg:col-span-2">
-          <h3 className="text-sm font-semibold text-dark-300 mb-4 flex items-center gap-2">
+          <h3
+            className="text-sm font-semibold mb-4 flex items-center gap-2"
+            style={{ color: 'var(--text-secondary)' }}
+          >
             <TrendingUp className="w-4 h-4 text-primary-400" />
             Infrastructure Growth
           </h3>
@@ -133,35 +145,51 @@ export default function Dashboard() {
                   <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 11 }} />
-              <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
-              <Tooltip
-                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8 }}
-                labelStyle={{ color: '#94a3b8' }}
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+              <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+              <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+              <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-secondary)' }} />
+              <Area
+                type="monotone"
+                dataKey="devices"
+                stroke="#3b82f6"
+                fill="url(#deviceGrad)"
+                name="Devices"
               />
-              <Area type="monotone" dataKey="devices" stroke="#3b82f6" fill="url(#deviceGrad)" name="Devices" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
         {/* Device by Role */}
         <div className="card">
-          <h3 className="text-sm font-semibold text-dark-300 mb-4 flex items-center gap-2">
+          <h3
+            className="text-sm font-semibold mb-4 flex items-center gap-2"
+            style={{ color: 'var(--text-secondary)' }}
+          >
             <Server className="w-4 h-4 text-violet-400" />
             Devices by Role
           </h3>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={55}
+                outerRadius={85}
+                paddingAngle={3}
+                dataKey="value"
+              >
                 {pieData.map((_, idx) => (
                   <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip
-                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8 }}
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend
+                iconType="circle"
+                iconSize={8}
+                wrapperStyle={{ fontSize: 11, color: 'var(--text-muted)' }}
               />
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11, color: '#94a3b8' }} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -171,7 +199,10 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         {/* Top Racks */}
         <div className="card">
-          <h3 className="text-sm font-semibold text-dark-300 mb-4 flex items-center gap-2">
+          <h3
+            className="text-sm font-semibold mb-4 flex items-center gap-2"
+            style={{ color: 'var(--text-secondary)' }}
+          >
             <Layers className="w-4 h-4 text-emerald-400" />
             Top Racks by Utilization
           </h3>
@@ -179,42 +210,82 @@ export default function Dashboard() {
             <div className="space-y-2">
               {stats.top_racks_by_utilization.slice(0, 8).map((rack) => (
                 <div key={rack.id} className="flex items-center gap-3">
-                  <div className="text-xs text-dark-400 w-24 truncate" title={rack.name}>{rack.name}</div>
-                  <div className="flex-1 bg-dark-800 rounded-full h-2">
+                  <div
+                    className="text-xs w-24 truncate"
+                    style={{ color: 'var(--text-muted)' }}
+                    title={rack.name}
+                  >
+                    {rack.name}
+                  </div>
+                  <div
+                    className="flex-1 rounded-full h-2"
+                    style={{ backgroundColor: 'var(--bg-elevated)' }}
+                  >
                     <div
                       className="h-2 rounded-full transition-all"
                       style={{
                         width: `${rack.utilization}%`,
-                        backgroundColor: rack.utilization > 90 ? '#ef4444' : rack.utilization > 70 ? '#f59e0b' : '#10b981',
+                        backgroundColor:
+                          rack.utilization > 90
+                            ? '#ef4444'
+                            : rack.utilization > 70
+                            ? '#f59e0b'
+                            : '#10b981',
                       }}
                     />
                   </div>
-                  <div className="text-xs text-dark-400 w-10 text-right">{rack.utilization}%</div>
+                  <div className="text-xs w-10 text-right" style={{ color: 'var(--text-muted)' }}>
+                    {rack.utilization}%
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-dark-500 text-sm text-center py-8">No rack data available</div>
+            <div
+              className="text-sm text-center py-8"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              No rack data available
+            </div>
           )}
         </div>
 
         {/* Active Alerts */}
         <div className="card">
-          <h3 className="text-sm font-semibold text-dark-300 mb-4 flex items-center gap-2">
+          <h3
+            className="text-sm font-semibold mb-4 flex items-center gap-2"
+            style={{ color: 'var(--text-secondary)' }}
+          >
             <AlertTriangle className="w-4 h-4 text-red-400" />
             Recent Alerts
           </h3>
           {recentAlerts?.results && recentAlerts.results.length > 0 ? (
             <div className="space-y-2">
               {(recentAlerts.results as Alert[]).map((alert: Alert) => (
-                <div key={alert.id} className="flex items-start gap-3 p-2 rounded-lg bg-dark-800/50">
+                <div
+                  key={alert.id}
+                  className="flex items-start gap-3 p-2 rounded-lg"
+                  style={{ backgroundColor: 'var(--bg-elevated)' }}
+                >
                   <div
                     className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-                    style={{ backgroundColor: alert.severity === 'critical' ? '#ef4444' : alert.severity === 'warning' ? '#f59e0b' : '#3b82f6' }}
+                    style={{
+                      backgroundColor:
+                        alert.severity === 'critical'
+                          ? '#ef4444'
+                          : alert.severity === 'warning'
+                          ? '#f59e0b'
+                          : '#3b82f6',
+                    }}
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-medium text-dark-200 truncate">{alert.title}</div>
-                    <div className="text-xs text-dark-500">
+                    <div
+                      className="text-xs font-medium truncate"
+                      style={{ color: 'var(--text-primary)' }}
+                    >
+                      {alert.title}
+                    </div>
+                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                       {new Date(alert.created_at).toLocaleString()}
                     </div>
                   </div>
@@ -223,7 +294,10 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-32 text-dark-500 text-sm">
+            <div
+              className="flex items-center justify-center h-32 text-sm"
+              style={{ color: 'var(--text-muted)' }}
+            >
               No active alerts
             </div>
           )}
@@ -232,19 +306,19 @@ export default function Dashboard() {
 
       {/* Status breakdown */}
       <div className="card">
-        <h3 className="text-sm font-semibold text-dark-300 mb-4 flex items-center gap-2">
+        <h3
+          className="text-sm font-semibold mb-4 flex items-center gap-2"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           <Activity className="w-4 h-4 text-primary-400" />
           Device Status Distribution
         </h3>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={statusData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-            <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 11 }} />
-            <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
-            <Tooltip
-              contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8 }}
-              labelStyle={{ color: '#94a3b8' }}
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+            <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+            <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+            <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-secondary)' }} />
             <Bar dataKey="value" name="Devices" radius={[4, 4, 0, 0]}>
               {statusData.map((entry, idx) => (
                 <Cell key={idx} fill={entry.fill} />

@@ -36,8 +36,8 @@ function dtToForm(dt: DeviceType): DtForm {
   };
 }
 
-const sel = 'w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white';
-const inp = 'w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white';
+const sel = "field-select";
+const inp = "field-input";
 
 function DtFormFields({ form, setForm, mfrList }: {
   form: DtForm;
@@ -50,19 +50,19 @@ function DtFormFields({ form, setForm, mfrList }: {
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="block text-xs text-gray-500 mb-1">Manufacturer *</label>
+          <label className="field-label">Manufacturer *</label>
           <select className={sel} value={form.manufacturer} onChange={e => f('manufacturer', Number(e.target.value))}>
             <option value="">Select Manufacturer</option>
             {mfrList.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-xs text-gray-500 mb-1">Model *</label>
+          <label className="field-label">Model *</label>
           <input className={inp} value={form.model} onChange={e => f('model', e.target.value)} placeholder="e.g. PowerEdge R750" />
         </div>
       </div>
       <div>
-        <label className="block text-xs text-gray-500 mb-1">Role *</label>
+        <label className="field-label">Role *</label>
         <select className={sel} value={form.device_role} onChange={e => f('device_role', e.target.value)}>
           {Object.entries(ROLE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
@@ -72,24 +72,24 @@ function DtFormFields({ form, setForm, mfrList }: {
         <div className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Physical Dimensions</div>
         <div className="grid grid-cols-3 gap-2">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Height (U) *</label>
+            <label className="field-label">Height (U) *</label>
             <input type="number" min={1} max={42} className={inp}
               value={form.u_height} onChange={e => f('u_height', Number(e.target.value))} />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Width (mm)</label>
+            <label className="field-label">Width (mm)</label>
             <input type="number" min={0} className={inp}
               value={form.width_mm} onChange={e => f('width_mm', Number(e.target.value))} />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Depth (mm)</label>
+            <label className="field-label">Depth (mm)</label>
             <input type="number" min={0} className={inp}
               value={form.depth_mm} onChange={e => f('depth_mm', Number(e.target.value))} />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2 mt-2">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Weight (kg)</label>
+            <label className="field-label">Weight (kg)</label>
             <input type="number" min={0} step={0.1} className={inp}
               value={form.weight_kg} onChange={e => f('weight_kg', Number(e.target.value))} />
           </div>
@@ -107,12 +107,12 @@ function DtFormFields({ form, setForm, mfrList }: {
         <div className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Power</div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Power Draw (W)</label>
+            <label className="field-label">Power Draw (W)</label>
             <input type="number" min={0} className={inp}
               value={form.power_draw_w} onChange={e => f('power_draw_w', Number(e.target.value))} />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Max Power Draw (W)</label>
+            <label className="field-label">Max Power Draw (W)</label>
             <input type="number" min={0} className={inp}
               value={form.max_power_draw_w} onChange={e => f('max_power_draw_w', Number(e.target.value))} />
           </div>
@@ -165,15 +165,15 @@ function DtModal({ editDt, onClose }: { editDt: DeviceType | null; onClose: () =
   });
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div className="modal-overlay">
       <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl border border-gray-200 max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-shrink-0">
-          <h2 className="text-sm font-bold text-gray-800">
+        <div className="modal-header">
+          <h2 className="modal-title">
             {editDt
               ? <><span>Edit — </span><span className="font-normal text-gray-500">{editDt.manufacturer_name} {editDt.model}</span></>
               : 'Add Device Type'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
         <div className="p-5 overflow-y-auto flex-1">
           <DtFormFields form={form} setForm={setForm} mfrList={(manufacturers as Manufacturer[]) || []} />
@@ -221,7 +221,7 @@ function DtModal({ editDt, onClose }: { editDt: DeviceType | null; onClose: () =
           )}
           <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm text-gray-700 hover:bg-gray-50">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={!form.manufacturer || !form.model || saveMutation.isPending}
             onClick={() => saveMutation.mutate()}>
             {saveMutation.isPending ? 'Saving…' : editDt ? 'Save Changes' : 'Create Type'}

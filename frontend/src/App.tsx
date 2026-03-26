@@ -14,6 +14,8 @@ import CablesPage from './pages/CablesPage';
 import MonitoringPage from './pages/MonitoringPage';
 import SensorsPage from './pages/SensorsPage';
 import ReportsPage from './pages/ReportsPage';
+import UsersPage from './pages/UsersPage';
+import SettingsPage from './pages/SettingsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,8 +57,8 @@ export default function App() {
             <Route path="monitoring" element={<MonitoringPage />} />
             <Route path="sensors" element={<SensorsPage />} />
             <Route path="reports" element={<ReportsPage />} />
-            <Route path="users" element={<div className="text-dark-400 p-8">Users management coming soon</div>} />
-            <Route path="settings" element={<div className="text-dark-400 p-8">Settings coming soon</div>} />
+            <Route path="users" element={<UsersPage />} />
+            <Route path="settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

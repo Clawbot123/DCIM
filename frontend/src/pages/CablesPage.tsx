@@ -11,8 +11,8 @@ const CABLE_COLORS: Record<string, string> = {
   'power-c13-c14': '#d97706', 'power-c19-c20': '#b45309', console: '#64748b',
 };
 
-const sel = 'w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white';
-const inp = 'w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white';
+const sel = "field-select";
+const inp = "field-input";
 
 interface CableForm {
   label: string;
@@ -61,20 +61,20 @@ function CableModal({ onClose, editing }: { onClose: () => void; editing?: any }
   });
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200 max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-shrink-0">
-          <h2 className="text-sm font-bold text-gray-800">{editing ? 'Edit Cable' : 'Add Cable'}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+    <div className="modal-overlay">
+      <div className="modal-box">
+        <div className="modal-header">
+          <h2 className="modal-title">{editing ? 'Edit Cable' : 'Add Cable'}</h2>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
-        <div className="p-5 space-y-3 overflow-y-auto flex-1">
+        <div className="modal-body">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Label</label>
+              <label className="field-label">Label</label>
               <input className={inp} value={form.label} onChange={e => f('label', e.target.value)} placeholder="e.g. CAB-001" />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Type *</label>
+              <label className="field-label">Type *</label>
               <select className={sel} value={form.cable_type} onChange={e => f('cable_type', e.target.value)}>
                 {CABLE_TYPES.map(t => <option key={t} value={t}>{t.toUpperCase()}</option>)}
               </select>
@@ -82,13 +82,13 @@ function CableModal({ onClose, editing }: { onClose: () => void; editing?: any }
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Status</label>
+              <label className="field-label">Status</label>
               <select className={sel} value={form.status} onChange={e => f('status', e.target.value)}>
                 {['connected', 'planned', 'decommissioning'].map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Length (m)</label>
+              <label className="field-label">Length (m)</label>
               <input type="number" min={0} step={0.1} className={inp}
                 value={form.length} onChange={e => f('length', e.target.value ? Number(e.target.value) : '')} placeholder="e.g. 2.5" />
             </div>
@@ -97,7 +97,7 @@ function CableModal({ onClose, editing }: { onClose: () => void; editing?: any }
             <div className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Side A</div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Type</label>
+                <label className="field-label">Type</label>
                 <select className={sel} value={form.termination_a_type} onChange={e => f('termination_a_type', e.target.value)}>
                   {['interface', 'power-outlet', 'console-port', 'front-port', 'rear-port'].map(t => (
                     <option key={t} value={t}>{t}</option>
@@ -105,7 +105,7 @@ function CableModal({ onClose, editing }: { onClose: () => void; editing?: any }
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">ID</label>
+                <label className="field-label">ID</label>
                 <input type="number" min={1} className={inp}
                   value={form.termination_a_id}
                   onChange={e => f('termination_a_id', e.target.value ? Number(e.target.value) : '')} placeholder="e.g. 1" />
@@ -116,7 +116,7 @@ function CableModal({ onClose, editing }: { onClose: () => void; editing?: any }
             <div className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Side B</div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Type</label>
+                <label className="field-label">Type</label>
                 <select className={sel} value={form.termination_b_type} onChange={e => f('termination_b_type', e.target.value)}>
                   {['interface', 'power-outlet', 'console-port', 'front-port', 'rear-port'].map(t => (
                     <option key={t} value={t}>{t}</option>
@@ -124,7 +124,7 @@ function CableModal({ onClose, editing }: { onClose: () => void; editing?: any }
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">ID</label>
+                <label className="field-label">ID</label>
                 <input type="number" min={1} className={inp}
                   value={form.termination_b_id}
                   onChange={e => f('termination_b_id', e.target.value ? Number(e.target.value) : '')} placeholder="e.g. 2" />
@@ -132,13 +132,13 @@ function CableModal({ onClose, editing }: { onClose: () => void; editing?: any }
             </div>
           </div>
           {mutation.isError && (
-            <div className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">Failed to save cable.</div>
+            <div className="modal-error">Failed to save cable.</div>
           )}
         </div>
         <div className="flex gap-2 px-5 pb-5 pt-3 border-t border-gray-100 flex-shrink-0">
           <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm text-gray-700 hover:bg-gray-50">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={mutation.isPending}
             onClick={() => mutation.mutate()}
           >

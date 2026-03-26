@@ -26,62 +26,53 @@ function DCModal({ onClose, editing }: { onClose: () => void; editing?: DataCent
   const f = (k: string, v: string | number) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-sm font-bold text-gray-800">{editing ? 'Edit Data Center' : 'Add Data Center'}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+    <div className="modal-overlay">
+      <div className="modal-box">
+        <div className="modal-header">
+          <h2 className="modal-title">{editing ? 'Edit Data Center' : 'Add Data Center'}</h2>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="modal-body">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Name *</label>
-              <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
-                value={form.name} onChange={e => f('name', e.target.value)} placeholder="e.g. Primary DC" />
+              <label className="field-label">Name *</label>
+              <input className="field-input" value={form.name} onChange={e => f('name', e.target.value)} placeholder="e.g. Primary DC" />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Code *</label>
-              <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
-                value={form.code} onChange={e => f('code', e.target.value.toUpperCase())} placeholder="e.g. DC1" />
+              <label className="field-label">Code *</label>
+              <input className="field-input" value={form.code} onChange={e => f('code', e.target.value.toUpperCase())} placeholder="e.g. DC1" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">City</label>
-              <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
-                value={form.city} onChange={e => f('city', e.target.value)} />
+              <label className="field-label">City</label>
+              <input className="field-input" value={form.city} onChange={e => f('city', e.target.value)} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Country</label>
-              <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
-                value={form.country} onChange={e => f('country', e.target.value)} />
+              <label className="field-label">Country</label>
+              <input className="field-input" value={form.country} onChange={e => f('country', e.target.value)} />
             </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Address</label>
-            <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
-              value={form.address} onChange={e => f('address', e.target.value)} />
+            <label className="field-label">Address</label>
+            <input className="field-input" value={form.address} onChange={e => f('address', e.target.value)} />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Total Power (kW)</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
-                value={form.total_power_kw} onChange={e => f('total_power_kw', Number(e.target.value))} min={0} />
+              <label className="field-label">Total Power (kW)</label>
+              <input type="number" className="field-input" value={form.total_power_kw} onChange={e => f('total_power_kw', Number(e.target.value))} min={0} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">PUE</label>
-              <input type="number" step="0.01" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
-                value={form.pue} onChange={e => f('pue', Number(e.target.value))} min={1} max={3} />
+              <label className="field-label">PUE</label>
+              <input type="number" step="0.01" className="field-input" value={form.pue} onChange={e => f('pue', Number(e.target.value))} min={1} max={3} />
             </div>
           </div>
-          {mutation.isError && (
-            <div className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">Failed to save. Check required fields.</div>
-          )}
+          {mutation.isError && <div className="modal-error">Failed to save. Check required fields.</div>}
         </div>
-        <div className="flex gap-2 px-5 pb-5">
-          <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm hover:bg-gray-50">Cancel</button>
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center"
             disabled={!form.name || !form.code || mutation.isPending}
             onClick={() => mutation.mutate()}
           >
@@ -119,10 +110,7 @@ export default function DataCentersPage() {
   return (
     <div>
       {(showModal || editingDC) && (
-        <DCModal
-          editing={editingDC ?? undefined}
-          onClose={() => { setShowModal(false); setEditingDC(null); }}
-        />
+        <DCModal editing={editingDC ?? undefined} onClose={() => { setShowModal(false); setEditingDC(null); }} />
       )}
 
       <div className="page-header">
@@ -133,14 +121,19 @@ export default function DataCentersPage() {
           </h1>
           <p className="page-subtitle">{dcs.length} data center{dcs.length !== 1 ? 's' : ''}</p>
         </div>
-        <button className="btn-primary flex items-center gap-2" onClick={() => setShowModal(true)}>
+        <button className="btn-primary gap-2" onClick={() => setShowModal(true)}>
           <Plus className="w-4 h-4" /> Add Data Center
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {dcs.map((dc) => (
-          <div key={dc.id} className="card hover:border-dark-600 transition-all hover:shadow-xl group cursor-pointer">
+          <div
+            key={dc.id}
+            className="card transition-all hover:shadow-xl group cursor-pointer"
+            onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--bg-hover)')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
+          >
             <div className="flex items-start justify-between mb-4">
               <div>
                 <div className="flex items-center gap-2">
@@ -148,11 +141,11 @@ export default function DataCentersPage() {
                     {dc.code}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-dark-100 mt-1">{dc.name}</h3>
+                <h3 className="text-lg font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{dc.name}</h3>
                 {dc.city && (
-                  <div className="flex items-center gap-1 text-xs text-dark-500 mt-1">
+                  <div className="flex items-center gap-1 text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                     <MapPin className="w-3 h-3" />
-                    {dc.city}, {dc.country}
+                    {dc.city}{dc.country ? `, ${dc.country}` : ''}
                   </div>
                 )}
               </div>
@@ -162,14 +155,15 @@ export default function DataCentersPage() {
                 </div>
                 <button
                   onClick={e => { e.stopPropagation(); setEditingDC(dc); }}
-                  className="p-1.5 rounded hover:bg-dark-700 text-dark-500 hover:text-dark-200 transition-colors"
+                  className="p-1.5 rounded transition-colors hover:opacity-80"
+                  style={{ color: 'var(--text-muted)' }}
                   title="Edit"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={e => { e.stopPropagation(); handleDelete(dc); }}
-                  className="p-1.5 rounded hover:bg-red-900/30 text-dark-500 hover:text-red-400 transition-colors"
+                  className="p-1.5 rounded transition-colors text-red-400 hover:opacity-80"
                   title="Delete"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -178,50 +172,55 @@ export default function DataCentersPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="bg-dark-800/50 rounded-lg p-3 text-center">
-                <div className="text-xl font-bold text-dark-100">{dc.rooms_count || 0}</div>
-                <div className="text-xs text-dark-500 mt-0.5">Rooms</div>
-              </div>
-              <div className="bg-dark-800/50 rounded-lg p-3 text-center">
-                <div className="text-xl font-bold text-dark-100">{dc.total_racks || 0}</div>
-                <div className="text-xs text-dark-500 mt-0.5">Racks</div>
-              </div>
-              <div className="bg-dark-800/50 rounded-lg p-3 text-center">
-                <div className="text-xl font-bold text-amber-400">{dc.pue}</div>
-                <div className="text-xs text-dark-500 mt-0.5">PUE</div>
-              </div>
+              {[
+                { label: 'Rooms', value: dc.rooms_count || 0, color: 'var(--text-primary)' },
+                { label: 'Racks', value: dc.total_racks || 0, color: 'var(--text-primary)' },
+                { label: 'PUE', value: dc.pue, color: '#f59e0b' },
+              ].map(({ label, value, color }) => (
+                <div
+                  key={label}
+                  className="rounded-lg p-3 text-center"
+                  style={{ backgroundColor: 'var(--bg-elevated)' }}
+                >
+                  <div className="text-xl font-bold" style={{ color }}>{value}</div>
+                  <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{label}</div>
+                </div>
+              ))}
             </div>
 
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-dark-400">
+                <div className="flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
                   <Zap className="w-3.5 h-3.5 text-amber-400" />
                   <span>Power</span>
                 </div>
-                <span className="text-dark-300">{dc.total_power_kw} kW</span>
+                <span style={{ color: 'var(--text-primary)' }}>{dc.total_power_kw} kW</span>
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-dark-400">
+                <div className="flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
                   <Wind className="w-3.5 h-3.5 text-cyan-400" />
                   <span>Cooling</span>
                 </div>
-                <span className="text-dark-300">{dc.total_cooling_tons} tons</span>
+                <span style={{ color: 'var(--text-primary)' }}>{dc.total_cooling_tons} tons</span>
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-dark-800 flex items-center gap-2">
-              <Link to="/floor-plan" className="btn-secondary text-xs py-1.5 flex-1 text-center">
+            <div className="mt-4 pt-4 flex items-center gap-2" style={{ borderTop: '1px solid var(--border)' }}>
+              <Link to="/floor-plan" className="btn-secondary text-xs py-1.5 flex-1 justify-center">
                 Floor Plan
               </Link>
-              <Link to="/racks" className="btn-primary text-xs py-1.5 flex-1 text-center">Manage</Link>
+              <Link to="/racks" className="btn-primary text-xs py-1.5 flex-1 justify-center">Manage</Link>
             </div>
           </div>
         ))}
 
         {/* Add new DC card */}
         <div
-          className="card border-dashed hover:border-dark-500 transition-colors cursor-pointer flex flex-col items-center justify-center min-h-48 text-dark-600 hover:text-dark-400"
+          className="card border-dashed transition-colors cursor-pointer flex flex-col items-center justify-center min-h-48 hover:opacity-80"
+          style={{ color: 'var(--text-muted)' }}
           onClick={() => setShowModal(true)}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--text-muted)')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
         >
           <Plus className="w-8 h-8 mb-2" />
           <span className="text-sm">Add Data Center</span>

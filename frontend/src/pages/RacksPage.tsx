@@ -51,16 +51,16 @@ function AddRackModal({ onClose }: { onClose: () => void }) {
   const f = (k: string, v: string | number) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-sm font-bold text-gray-800">Add Rack</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+    <div className="modal-overlay">
+      <div className="modal-box">
+        <div className="modal-header">
+          <h2 className="modal-title">Add Rack</h2>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="modal-body">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Data Center *</label>
-            <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Data Center *</label>
+            <select className="field-input"
               value={selectedDC}
               onChange={e => { setSelectedDC(Number(e.target.value)); setSelectedRoom(''); setSelectedRow(''); }}>
               <option value="">Select Data Center</option>
@@ -68,8 +68,8 @@ function AddRackModal({ onClose }: { onClose: () => void }) {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Room *</label>
-            <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Room *</label>
+            <select className="field-input"
               value={selectedRoom}
               onChange={e => { setSelectedRoom(Number(e.target.value)); setSelectedRow(''); }}
               disabled={!selectedDC}>
@@ -78,8 +78,8 @@ function AddRackModal({ onClose }: { onClose: () => void }) {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Row (auto-creates Row-A if none)</label>
-            <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Row (auto-creates Row-A if none)</label>
+            <select className="field-input"
               value={selectedRow}
               onChange={e => setSelectedRow(Number(e.target.value))}
               disabled={!selectedRoom}>
@@ -88,19 +88,19 @@ function AddRackModal({ onClose }: { onClose: () => void }) {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Rack Name *</label>
-            <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Rack Name *</label>
+            <input className="field-input"
               value={form.name} onChange={e => f('name', e.target.value)} placeholder="e.g. R01" />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">U Height</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">U Height</label>
+              <input type="number" className="field-input"
                 value={form.u_height} onChange={e => f('u_height', Number(e.target.value))} min={1} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Status</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Status</label>
+              <select className="field-input"
                 value={form.status} onChange={e => f('status', e.target.value)}>
                 {['active', 'planned', 'reserved', 'decommissioned'].map(s => (
                   <option key={s} value={s}>{s}</option>
@@ -110,24 +110,24 @@ function AddRackModal({ onClose }: { onClose: () => void }) {
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Max Power (kW)</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Max Power (kW)</label>
+              <input type="number" className="field-input"
                 value={form.max_power_kw} onChange={e => f('max_power_kw', Number(e.target.value))} min={0} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Width (m)</label>
-              <input type="number" step="0.1" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Width (m)</label>
+              <input type="number" step="0.1" className="field-input"
                 value={form.width} onChange={e => f('width', Number(e.target.value))} min={0.1} />
             </div>
           </div>
           {mutation.isError && (
-            <div className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">Failed to create rack.</div>
+            <div className="modal-error">Failed to create rack.</div>
           )}
         </div>
-        <div className="flex gap-2 px-5 pb-5">
-          <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm hover:bg-gray-50">Cancel</button>
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={!form.name || !selectedRoom || mutation.isPending}
             onClick={() => mutation.mutate()}
           >
@@ -156,33 +156,33 @@ function EditRackModal({ rack, onClose }: { rack: Rack; onClose: () => void }) {
   const f = (k: string, v: string | number) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div className="modal-overlay">
       <div className="bg-white rounded-xl w-full max-w-sm shadow-2xl border border-gray-200">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
-          <h2 className="text-sm font-bold text-gray-800">Edit Rack</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+        <div className="modal-header">
+          <h2 className="modal-title">Edit Rack</h2>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="modal-body">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Name *</label>
-            <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Name *</label>
+            <input className="field-input"
               value={form.name} onChange={e => f('name', e.target.value)} />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">U Height</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">U Height</label>
+              <input type="number" className="field-input"
                 value={form.u_height} onChange={e => f('u_height', Number(e.target.value))} min={1} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Max Power (kW)</label>
-              <input type="number" className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+              <label className="field-label">Max Power (kW)</label>
+              <input type="number" className="field-input"
                 value={form.max_power_kw} onChange={e => f('max_power_kw', Number(e.target.value))} min={0} />
             </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Status</label>
-            <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Status</label>
+            <select className="field-input"
               value={form.status} onChange={e => f('status', e.target.value)}>
               {['active', 'planned', 'reserved', 'decommissioned'].map(s => (
                 <option key={s} value={s}>{s}</option>
@@ -190,13 +190,13 @@ function EditRackModal({ rack, onClose }: { rack: Rack; onClose: () => void }) {
             </select>
           </div>
           {mutation.isError && (
-            <div className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">Failed to update rack.</div>
+            <div className="modal-error">Failed to update rack.</div>
           )}
         </div>
-        <div className="flex gap-2 px-5 pb-5">
-          <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm hover:bg-gray-50">Cancel</button>
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={!form.name || mutation.isPending}
             onClick={() => mutation.mutate()}
           >

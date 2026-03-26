@@ -69,22 +69,22 @@ function DeviceTypeFormFields({
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="block text-xs text-gray-500 mb-1">Manufacturer *</label>
-          <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+          <label className="field-label">Manufacturer *</label>
+          <select className="field-input"
             value={form.manufacturer} onChange={e => f('manufacturer', Number(e.target.value))}>
             <option value="">Select Manufacturer</option>
             {mfrList.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-xs text-gray-500 mb-1">Model *</label>
-          <input className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+          <label className="field-label">Model *</label>
+          <input className="field-input"
             value={form.model} onChange={e => f('model', e.target.value)} placeholder="e.g. PowerEdge R750" />
         </div>
       </div>
       <div>
-        <label className="block text-xs text-gray-500 mb-1">Role *</label>
-        <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+        <label className="field-label">Role *</label>
+        <select className="field-input"
           value={form.device_role} onChange={e => f('device_role', e.target.value)}>
           {Object.entries(ROLE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
@@ -94,25 +94,25 @@ function DeviceTypeFormFields({
         <div className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Physical Dimensions</div>
         <div className="grid grid-cols-3 gap-2">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Height (U) *</label>
-            <input type="number" min={1} max={42} className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Height (U) *</label>
+            <input type="number" min={1} max={42} className="field-input"
               value={form.u_height} onChange={e => f('u_height', Number(e.target.value))} />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Width (mm)</label>
-            <input type="number" min={0} className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Width (mm)</label>
+            <input type="number" min={0} className="field-input"
               value={form.width_mm} onChange={e => f('width_mm', Number(e.target.value))} />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Depth (mm)</label>
-            <input type="number" min={0} className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Depth (mm)</label>
+            <input type="number" min={0} className="field-input"
               value={form.depth_mm} onChange={e => f('depth_mm', Number(e.target.value))} />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2 mt-2">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Weight (kg)</label>
-            <input type="number" min={0} step={0.1} className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Weight (kg)</label>
+            <input type="number" min={0} step={0.1} className="field-input"
               value={form.weight_kg} onChange={e => f('weight_kg', Number(e.target.value))} />
           </div>
           <div className="flex items-end pb-1.5">
@@ -130,13 +130,13 @@ function DeviceTypeFormFields({
         <div className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Power</div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Power Draw (W)</label>
-            <input type="number" min={0} className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Power Draw (W)</label>
+            <input type="number" min={0} className="field-input"
               value={form.power_draw_w} onChange={e => f('power_draw_w', Number(e.target.value))} />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Max Power Draw (W)</label>
-            <input type="number" min={0} className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Max Power Draw (W)</label>
+            <input type="number" min={0} className="field-input"
               value={form.max_power_draw_w} onChange={e => f('max_power_draw_w', Number(e.target.value))} />
           </div>
         </div>
@@ -146,14 +146,14 @@ function DeviceTypeFormFields({
         <div className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Appearance & Airflow</div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Airflow</label>
-            <select className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white"
+            <label className="field-label">Airflow</label>
+            <select className="field-input"
               value={form.airflow} onChange={e => f('airflow', e.target.value)}>
               {Object.entries(AIRFLOW_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Color</label>
+            <label className="field-label">Color</label>
             <div className="flex items-center gap-2">
               <input type="color" className="h-8 w-10 rounded border border-gray-300 cursor-pointer p-0.5"
                 value={form.color} onChange={e => f('color', e.target.value)} />
@@ -196,13 +196,13 @@ function DeviceTypeModal({
   const isValid = !!form.manufacturer && !!form.model;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div className="modal-overlay">
       <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl border border-gray-200 max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-shrink-0">
-          <h2 className="text-sm font-bold text-gray-800">
+        <div className="modal-header">
+          <h2 className="modal-title">
             {editDt ? `Edit — ${editDt.manufacturer_name} ${editDt.model}` : 'Add Device Type'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+          <button onClick={onClose} className="modal-close-btn"><X className="w-4 h-4" /></button>
         </div>
         <div className="p-5 overflow-y-auto flex-1">
           <DeviceTypeFormFields form={form} setForm={setForm} mfrList={mfrList} />
@@ -220,9 +220,9 @@ function DeviceTypeModal({
               Delete
             </button>
           )}
-          <button onClick={onClose} className="flex-1 border border-gray-300 rounded py-1.5 text-sm hover:bg-gray-50">Cancel</button>
+          <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
           <button
-            className="flex-1 bg-[#1e293b] text-white rounded py-1.5 text-sm hover:bg-[#334155] disabled:opacity-50"
+            className="btn-primary flex-1 justify-center disabled:opacity-50"
             disabled={!isValid || saveMutation.isPending}
             onClick={() => saveMutation.mutate()}
           >
